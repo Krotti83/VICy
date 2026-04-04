@@ -57,12 +57,12 @@ Next phase see development roadmap (version 0.1)
 * Context persistence across sleep/shutdown
 * Snapshot of active state
 
-### VICySense (later releases)
+#### VICySense (later releases)
 
 * Sensor input (temperature, pressure, etc.)
-* Signal → perception mapping
+* Signal -> perception mapping
 
-### VICyAct (later releases)
+#### VICyAct (later releases)
 
 * Interacting with the world
 * Actors (relays, motors, etc.)
@@ -151,7 +151,7 @@ After wake:
 
 ## Development Roadmap
 
-### v0.1
+### v0.1.x.x
 
 * Basic MemoryGraph
 * Node and relation storage
