@@ -2,24 +2,24 @@
 
 ## Vision
 
-VICy (Virtual Intelligence) is a local-first open cognitive system designed to perceive, 
+**VICy** (Virtual Intelligence) is a local-first open cognitive system designed to perceive, 
 remember, and act within a structured and ethical framework. It combines a modular architecture 
 with an associative memory graph, enabling transparent reasoning, context awareness, and 
 adaptive behavior.
 
-Unlike traditional AI systems, VICy focuses on clarity, control, and real-world integration. 
+Unlike traditional AI systems, **VICy** focuses on clarity, control, and real-world integration. 
 It is designed to operate efficiently on local hardware, respect user privacy, and support 
 humans and other life forms through responsible and verifiable decision-making.
 
-The project follows a long-term vision of building a system that connects perception (VICySense), 
-memory (VICyMemoryGraph), reasoning (VICyCore), ethics (VICyEthos), and action (VICyyAct) into a 
-coherent and extensible platform. 
+The project follows a long-term vision of building a system that connects perception (*VICySense*), 
+memory (*VICyMemoryGraph*), reasoning (*VICyCore*), ethics (*VICyEthos*), and action (*VICyyAct*) into 
+a coherent and extensible platform. 
 
 ## Project status
 
 **Planning**
 
-Next phase see development roadmap (version 0.1)
+Next phase see development roadmap (version 0.1.x.x)
 
 ## Philosophy
 
@@ -27,7 +27,7 @@ Next phase see development roadmap (version 0.1)
 * Transparency over black-box behavior
 * Local execution (privacy + efficiency)
 * Ethical constraints as core system layer
-* Inspired by practical engineering (Donald E. Knuth, C developers, hacker culture, etc.)
+* Inspired by practical engineering (*Donald E. Knuth*, *C inventors*, *hacker culture*, etc.)
 
 ## System Architecture
 
@@ -109,10 +109,10 @@ Next phase see development roadmap (version 0.1)
 
 ### Supported queries
 
-* What is X?
-* Define X
-* What is related to X?
-* How is X connected to Y?
+* What is *X*?
+* Define *X*
+* What is related to *X*?
+* How is *X* connected to *Y*?
 
 ## Interfaces
 
@@ -163,11 +163,11 @@ After wake:
 * Context memory
 * Improved query engine
 * Control interface
-* Sensor integration (VICySense)
-* Acting with the environment (VICyAct)
+* Sensor integration (*VICySense*)
+* Acting with the environment (*VICyAct*)
 * Internal state model
 * Learning system
-* Optimization (C/ASM/FPGA)
+* Optimization (*C*/*Assembly*/*FPGA*)
 * Advanced reasoning
 
 ## Licensing
@@ -179,6 +179,19 @@ Core system:
 Optional modules/interfaces
 
 * Permissive (**ISC**/**MIT**)
+
+## Required build tools
+
+* GNU make
+* *C++* compile with at least **C++20** support
+
+## Building
+
+```
+$ git clone git@github.com:Krotti83/VICy.git
+$ cd VICy/src/VICy
+$ make
+```
 
 ## Notes
 
