@@ -32,7 +32,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include <Network/Socket.hpp>
+#include <VICyLibGen/Network/Socket.hpp>
 
 using namespace VICy::LibGen::Network;
 
