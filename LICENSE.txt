@@ -1,0 +1,28 @@
+VICy - Open Cognitive Assist System
+
+LICENSES:
+The complete source code is licensed under different licenses. Each
+part is use uses a different license. Here the licenses for each module:
+
+Build-system:
+The build system is licensed under the ISC license. For the full text
+of the ISC license see 'Licenses/ISC.txt'
+
+VICy:
+The main VI (virtual intelligence) program is licensed under the GPLv3.0
+and later. For the full text of the GPLv3 license see 'Licenses/GPLv3.txt'.
+
+VICyControl:
+The control application is licensed under the ISC license. For the full text
+of the ISC license see 'Licenses/ISC.txt'
+
+VICyUser:
+The user interface application is licensed under the ISC license. For the
+full text of the ISC license see 'Licenses/ISC.txt'
+
+VICyLibGen:
+The generic library is licensed under the ISC license. For the  full text of the
+ISC license see 'Licenses/ISC.txt'
+
+For all licenses see 'Licenses' directory in this source directory. The MIT license
+is currently not used.
