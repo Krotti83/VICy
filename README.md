@@ -25,7 +25,7 @@ Next phase see development roadmap (version 0.1.x.x)
 
 | Target/Configuration      | Status |
 |---------------------------|--------|
-| Linux/Default             | [![Build Ubuntu CI](https://github.com/Krotti83/VICy/actions/workflows/build_lnx_default.yml/badge.svg)](https://github.com/Krotti83/VICy/actions/workflows
+| Linux/Default             | [![Build Ubuntu CI](https://github.com/Krotti83/VICy/actions/workflows/build_lnx_default.yml/badge.svg)](https://github.com/Krotti83/VICy/actions/workflows/build_lnx_default.yml))
 
 ## Philosophy
 
