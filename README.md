@@ -183,7 +183,7 @@ Optional modules/interfaces
 ## Required build tools
 
 * GNU make
-* *C++* compile with at least **C++20** support
+* *C++* compiler with at least **C++20** support
 
 ## Building
 
