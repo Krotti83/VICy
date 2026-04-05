@@ -1,8 +1,24 @@
 # VICy - Open Cognitive Assist System
 
+A local-first virtual intelligence system designed to perceive, remember, reason, and act within 
+an ethical framework.
+
+## Why VICy?
+
+**VICy** is designed as a local, transparent alternative to opaque *AI* systems.
+It focuses on structured memory, ethical behavior, and real-world integration.
+
+## Key Features
+
+* Modular architecture (Core, Memory, Sense, Act, Ethos)
+* Associative memory graph (transparent knowledge representation)
+* Local-first design (privacy + efficiency)
+* Ethical guard system (VicyEthos)
+* Persistent context across sessions (VicyContinuity)
+
 ## Vision
 
-**VICy** (Virtual Intelligence) is a local-first open cognitive system designed to perceive, 
+**VICy** (*Virtual Intelligence*) is a local-first open cognitive system designed to perceive, 
 remember, and act within a structured and ethical framework. It combines a modular architecture 
 with an associative memory graph, enabling transparent reasoning, context awareness, and 
 adaptive behavior.
@@ -17,9 +33,14 @@ a coherent and extensible platform.
 
 ## Project status
 
-**Planning**
+Early development (*v0.1.x.x*)
 
-Next phase see development roadmap (version 0.1.x.x)
+Currently working on:
+
+* Base libraries (Network Layer, Terminal Layer, etc.) -> **IN PROGRESS**
+* MemoryGraph basics
+* Query system
+* Persistence -> **IN PROGRESS**
 
 ## Build status
 
@@ -33,6 +54,7 @@ Next phase see development roadmap (version 0.1.x.x)
 * Transparency over black-box behavior
 * Local execution (privacy + efficiency)
 * Ethical constraints as core system layer
+* Long-term, modular system design
 * Inspired by practical engineering (*Donald E. Knuth*, *C inventors*, *hacker culture*, etc.)
 
 ## System Architecture
@@ -111,7 +133,7 @@ Next phase see development roadmap (version 0.1.x.x)
 * Type (is_a, related_to, etc.)
 * Weight/strength
 
-## Query System (v0.1)
+## Query System (v0.1.x.x)
 
 ### Supported queries
 
