@@ -20,4 +20,6 @@ jobs:
     - name: configure
       run: ./configure
     - name: make
-      run: src/VICy/make
+      run: |
+       cd src/VICy
+       make
