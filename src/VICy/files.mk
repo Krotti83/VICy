@@ -27,7 +27,7 @@ VICY_CXXSRC			+= $(VICY_SRCDIR)/Options.cpp
 
 include ../$(VICY_SRCDIR)/VICyLibGen/files.mk
 
-#include $(VICY_SRCDIR)/VICyLib/files.mk
+include $(VICY_SRCDIR)/VICyLib/files.mk
 include $(VICY_SRCDIR)/VICyCore/files.mk
 include $(VICY_SRCDIR)/VICyEthos/files.mk
 include $(VICY_SRCDIR)/VICyMemoryGraph/files.mk
