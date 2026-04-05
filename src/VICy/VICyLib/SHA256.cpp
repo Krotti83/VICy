@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2026 Johannes Krottmayer <krotti83@proton.me>
  *
- * This file is part of VICy's library modules.
+ * This file is part of VICy's core library modules.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,57 +72,236 @@ static const unsigned long k[64] = {
 
 SHA256::SHA256()
 {
-    m_done = false;
-    init();
+    m_initDone = false;
+    m_sumDone = false;
+    m_hashDone = false;
+    m_validData = false;
+    m_hashCurrent = nullptr;
+    m_hashLast = nullptr;
+}
+
+SHA256::SHA256(const SHA256 &sha256)
+{
+    if (sha256.m_validData && sha256.m_hashDone) {
+        for (int i = 0; i < 32; i++) {
+            m_hash[i] = sha256.m_hash[i];
+        }
+
+        m_validData = true;
+        m_hashDone = true;
+    } else {
+        m_validData = false;
+        m_hashDone = false;
+    }
+
+    m_hashCurrent = nullptr;
+    m_hashLast = nullptr;
 }
 
 SHA256::~SHA256()
 {
-    // This is currently a stub.
+    if (m_hashCurrent) {
+        delete[] m_hashCurrent;
+    }
+
+    if (m_hashLast) {
+        delete[] m_hashLast;
+    }
 }
 
 SHA256::SHA256(void *buf, size_t len)
 {
-    m_done = false;
+    m_initDone = false;
+    m_sumDone = false;
+    m_hashDone = false;
+    m_validData = false;
+    m_hashCurrent = nullptr;
+    m_hashLast = nullptr;
+
+    if (len < 1) {
+        return;
+    }
+
+    m_validData = true;
+    m_hashCurrent = new unsigned int[8];
+    m_hashLast = new unsigned int[8];
     init();
-    m_done = true;
     sum(buf, len);
+    hash();
 }
 
 SHA256::SHA256(std::queue<unsigned char> buf)
 {
-    m_done = false;
+    m_initDone = false;
+    m_sumDone = false;
+    m_hashDone = false;
+    m_validData = false;
+    m_hashCurrent = nullptr;
+    m_hashLast = nullptr;
 
-    if (!m_done) {
-        init();
+    if (buf.size() < 1) {
+        return;
     }
 
-    m_done = true;
+    m_validData = true;
+    m_hashCurrent = new unsigned int[8];
+    m_hashLast = new unsigned int[8];
+    init();
     sum(buf);
+    hash();
 }
 
-void SHA256::Calc(void *buf, size_t len)
+SHA256::SHA256(std::vector<unsigned char> buf)
 {
-    if (!m_done) {
-        init();
+    std::queue<unsigned char> tmp;
+
+    m_initDone = false;
+    m_sumDone = false;
+    m_hashDone = false;
+    m_validData = false;
+    m_hashCurrent = nullptr;
+    m_hashLast = nullptr;
+
+    if (buf.size() < 1) {
+        return;
     }
 
-    m_done = true;
+    m_validData = true;
+    m_hashCurrent = new unsigned int[8];
+    m_hashLast = new unsigned int[8];
+    init();
+
+    for (unsigned char &c : buf) {
+        tmp.push(c);
+    }
+
+    sum(tmp);
+    hash();
+}
+
+void SHA256::Calc(void *buf, size_t len, bool discard)
+{
+    if (m_validData && !discard) {
+        return;
+    }
+
+    if (len < 1) {
+        m_validData = false;
+        return;
+    }
+
+    m_initDone = false;
+    m_sumDone = false;
+    m_hashDone = false;
+    m_validData = true;
+
+    if (!m_hashCurrent) {
+        m_hashCurrent = new unsigned int[8];
+    }
+
+    if (!m_hashLast) {
+        m_hashLast = new unsigned int[8];
+    }
+
+    init();
     sum(buf, len);
+    hash();
 }
 
-void SHA256::Calc(std::queue<unsigned char> buf)
+void SHA256::Calc(std::queue<unsigned char> buf, bool discard)
 {
-    if (!m_done) {
-        init();
+    if (m_validData && !discard) {
+        return;
     }
 
-    m_done = true;
+    if (buf.size() < 1) {
+        m_validData = false;
+        return;
+    }
+
+    m_initDone = false;
+    m_sumDone = false;
+    m_hashDone = false;
+    m_validData = true;
+
+    if (!m_hashCurrent) {
+        m_hashCurrent = new unsigned int[8];
+    }
+
+    if (!m_hashLast) {
+        m_hashLast = new unsigned int[8];
+    }
+
+    init();
     sum(buf);
+    hash();
+}
+
+void SHA256::Calc(std::vector<unsigned char> buf, bool discard)
+{
+    std::queue<unsigned char> tmp;
+
+    if (m_validData && !discard) {
+        return;
+    }
+
+    if (buf.size() < 1) {
+        m_validData = false;
+        return;
+    }
+
+    m_initDone = false;
+    m_sumDone = false;
+    m_hashDone = false;
+    m_validData = true;
+
+    if (!m_hashCurrent) {
+        m_hashCurrent = new unsigned int[8];
+    }
+
+    if (!m_hashLast) {
+        m_hashLast = new unsigned int[8];
+    }
+
+    init();
+
+    for (unsigned char &c : buf) {
+        tmp.push(c);
+    }
+
+    sum(tmp);
+    hash();
+}
+
+void SHA256::ClearHash()
+{
+    m_hashDone = false;
+    m_validData = false;
+}
+
+bool SHA256::ValidHash()
+{
+    if (!m_validData) {
+        return false;
+    }
+
+    if (!m_hashDone) {
+        return false;
+    }
+
+    return true;
 }
 
 void SHA256::init()
 {
+    if (!m_validData) {
+        return;
+    }
+
+    if (m_initDone) {
+        return;
+    }
+
     m_hashCurrent[0] = SHA256_INIT_H1;
     m_hashCurrent[1] = SHA256_INIT_H2;
     m_hashCurrent[2] = SHA256_INIT_H3;
@@ -140,6 +319,8 @@ void SHA256::init()
     m_hashLast[5] = SHA256_INIT_H6;
     m_hashLast[6] = SHA256_INIT_H7;
     m_hashLast[7] = SHA256_INIT_H8;
+
+    m_initDone = true;
 }
 
 void SHA256::transform(unsigned char msg[64])
@@ -149,6 +330,14 @@ void SHA256::transform(unsigned char msg[64])
     unsigned long t1;
     unsigned long t2;
     unsigned long w[64];
+
+    if (!m_initDone) {
+        return;
+    }
+
+    if (!m_validData) {
+        return;
+    }
 
     for (i = 0; i < 16; i++) {
         w[i] = static_cast<unsigned long>(msg[j++] << 24);
@@ -206,6 +395,22 @@ void SHA256::sum(void *buf, size_t len)
     int mod;
     unsigned char *ptr;
 
+    if (len < 1) {
+        return;
+    }
+
+    if (!m_initDone) {
+        return;
+    }
+
+    if (!m_validData) {
+        return;
+    }
+
+    if (m_sumDone) {
+        return;
+    }
+
     ptr = static_cast<unsigned char *>(buf);
 
     num_blocks = len / 64;
@@ -244,6 +449,7 @@ void SHA256::sum(void *buf, size_t len)
     msg[62] = static_cast<unsigned char>((len_bit >> 8) & 0xFF);
     msg[63] = static_cast<unsigned char>(len_bit & 0xFF);
     transform(msg);
+    m_sumDone = true;
 }
 
 void SHA256::sum(std::queue<unsigned char> buf)
@@ -255,6 +461,22 @@ void SHA256::sum(std::queue<unsigned char> buf)
     unsigned long int len_bit;
     long int num_blocks;
     int mod;
+
+    if (buf.size() < 1) {
+        return;
+    }
+
+    if (!m_initDone) {
+        return;
+    }
+
+    if (!m_validData) {
+        return;
+    }
+
+    if (m_sumDone) {
+        return;
+    }
 
     num_blocks = buf.size() / 64;
     mod = buf.size() % 64;
@@ -306,10 +528,19 @@ void SHA256::sum(std::queue<unsigned char> buf)
     msg[62] = static_cast<unsigned char>((len_bit >> 8) & 0xFF);
     msg[63] = static_cast<unsigned char>(len_bit & 0xFF);
     transform(msg);
+    m_sumDone = true;
 }
 
 void SHA256::hash()
 {
+    if (!m_initDone) {
+        return;
+    }
+
+    if (!m_sumDone) {
+        return;
+    }
+
     m_hash[0] = static_cast<unsigned char>((m_hashCurrent[0] >> 24) & 0xFF);
     m_hash[1] = static_cast<unsigned char>((m_hashCurrent[0] >> 16) & 0xFF);
     m_hash[2] = static_cast<unsigned char>((m_hashCurrent[0] >> 8) & 0xFF);
@@ -349,26 +580,116 @@ void SHA256::hash()
     m_hash[29] = static_cast<unsigned char>((m_hashCurrent[7] >> 16) & 0xFF);
     m_hash[30] = static_cast<unsigned char>((m_hashCurrent[7] >> 8) & 0xFF);
     m_hash[31] = static_cast<unsigned char>(m_hashCurrent[7] & 0xFF);
+
+    m_hashDone = true;
 }
 
-std::array<unsigned char, 32> SHA256::GetHashBuffer()
+std::array<unsigned char, 32> SHA256::GetHashArray()
 {
-    return m_hash;
+    std::array<unsigned char, 32> ret = { 0 };
+
+    if (m_hashDone) {
+        return m_hash;
+    }
+
+    return ret;
 }
 
-std::string SHA256::GetHashSring()
+std::vector<unsigned char> SHA256::GetHashVector()
+{
+    std::vector<unsigned char> ret;
+
+    if (!m_hashDone) {
+        ret.clear();
+        return ret;
+    }
+
+    for (unsigned char &c : m_hash) {
+        ret.push_back(c);
+    }
+
+    return ret;
+}
+
+std::string SHA256::GetHashString()
 {
     std::string ret;
     std::string tmp;
     std::stringstream ss;
 
+    if (!m_hashDone) {
+        ret.clear();
+        return ret;
+    }
+
     ret.clear();
 
-    for (unsigned char &i : m_hash) {
-        ss << std::hex << i;
+    for (unsigned char &c : m_hash) {
+        ss << std::hex << c;
         ss >> tmp;
         ret.append(tmp);
     }
 
     return ret;
+}
+
+bool SHA256::operator==(const SHA256 &sha256)
+{
+    if (m_validData != sha256.m_validData) {
+        return false;
+    }
+
+    if (m_hashDone != sha256.m_hashDone) {
+        return false;
+    }
+
+    for (int i = 0; i < 32; i++) {
+        if (m_hash[i] != sha256.m_hash[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool SHA256::operator!=(const SHA256 &sha256)
+{
+    bool flag = false;
+
+    if (m_hashDone != sha256.m_hashDone) {
+        return true;
+    }
+
+    for (int i = 0; i < 32; i++) {
+        if (m_hash[i] != sha256.m_hash[i]) {
+            if (!flag) {
+                flag = true;
+            }
+        }
+    }
+
+    if (flag) {
+        return true;
+    }
+
+    return false;
+}
+
+SHA256& SHA256::operator=(const SHA256 &sha256)
+{
+    if (this != &sha256) {
+        if (sha256.m_validData && sha256.m_hashDone) {
+            for (int i = 0; i < 32; i++) {
+                m_hash[i] = sha256.m_hash[i];
+            }
+
+            m_validData = true;
+            m_hashDone = true;
+        } else {
+            m_validData = false;
+            m_hashDone = false;
+        }
+    }
+
+    return *this;
 }
